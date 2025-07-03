@@ -16,7 +16,7 @@ app.use(express.json());
 //mongoDB conect start >
 
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS }@cluster0.i5ort.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.i5ort.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -44,29 +44,41 @@ run().catch(console.dir);
 
 //mongoDB conect end >
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
   res.send('job is falling from the sky');
 });
 
 //jobs reletade apis start >
 const jobsCollection = client.db("JobHouse").collection("jobs");
+//make jobapplication collection stap 2 start>
+const jobApplicationCollection = client.db("JobHouse").collection("job-applications");
+//make jobapplication collection stap 2 end>
 
-app.get('/jobs',async(req, res)=>{
-  const cursor =jobsCollection.find();
+app.get('/jobs', async (req, res) => {
+  const cursor = jobsCollection.find();
   const result = await cursor.toArray();
   res.send(result);
 })
 
 //loade data for jobdetails start >
-app.get('/jobs/:id',async(req,res)=>{
-   const id = req.params.id;
-   const query = {_id: new ObjectId(id)}
-   const result = await jobsCollection.findOne(query);
+app.get('/jobs/:id', async (req, res) => {
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) }
+  const result = await jobsCollection.findOne(query);
   res.send(result);
 })
 //loade data for jobdetails start >
 
+//job applications api stap-1 start>
+app.post('/job-applications',async(req,res)=>{
+  const application = req.body;
+ const result = await jobApplicationCollection.insertOne(application);
+ res.send(result);
+})
+
+//job applications api stap-1 end>
+
 //jobs reletade apis end >
-app.listen(port, () =>{
+app.listen(port, () => {
   console.log(`job id watinhg at: ${port}`);
 })
