@@ -54,26 +54,38 @@ const jobsCollection = client.db("JobHouse").collection("jobs");
 const jobApplicationCollection = client.db("JobHouse").collection("job-applications");
 //make jobapplication collection stap 2 end>
 
+//jotp job dorkar tar data nia nawa start>
 app.get('/jobs', async (req, res) => {
   const cursor = jobsCollection.find();
   const result = await cursor.toArray();
   res.send(result);
 })
+//jotp job dorkar tar data nia nawa end>
 
-//loade data for jobdetails start >
+//loade data specpice jobdetails start >
 app.get('/jobs/:id', async (req, res) => {
   const id = req.params.id;
   const query = { _id: new ObjectId(id) }
   const result = await jobsCollection.findOne(query);
   res.send(result);
 })
-//loade data for jobdetails start >
+//loade data for jobdetails end >
+
+
+//get some [0,1,many] data load use quary start>
+app.get('/job-application',async(req,res) =>{
+  const email = req.query.email;
+  const query = {applicant_email:email}
+  const result = await jobApplicationCollection.find(query).toArray();
+  res.send(result);
+})
+//get some [0,1,many] data load use quary end
 
 //job applications api stap-1 start>
-app.post('/job-applications',async(req,res)=>{
+app.post('/job-applications', async(req, res) =>{
   const application = req.body;
- const result = await jobApplicationCollection.insertOne(application);
- res.send(result);
+  const result = await jobApplicationCollection.insertOne(application);
+  res.send(result);
 })
 
 //job applications api stap-1 end>
