@@ -71,32 +71,40 @@ app.get('/jobs/:id', async (req, res) => {
 })
 //loade data for jobdetails end >
 
+//make post job for assignment start>
+app.post('/jobs', async(req,res) =>{
+  const newJob = req.body;
+  const result = await jobsCollection.insertOne(newJob);
+  res.send(result);
+})
+//make post job for assignment start>
+
 
 //get some [0,1,many] data load use quary start>
-app.get('/job-application',async(req,res) =>{
+app.get('/job-application', async (req, res) => {
   const email = req.query.email;
-  const query = {applicant_email:email}
+  const query = { applicant_email: email }
   const result = await jobApplicationCollection.find(query).toArray();
- //fokira way to aggergate data start>
- for(const application of result){
-  console.log(application.job_id)
-  const query1 ={_id:new ObjectId(application.job_id)}
-  const job = await jobsCollection.findOne(query1);
-  if(job){
-    application.title =job.title;
-    application.company = job.company;
-    application.company_logo = job.company_logo;
-    application.description = job.description;
+  //fokira way to aggergate data start>
+  for (const application of result) {
+    console.log(application.job_id)
+    const query1 = { _id: new ObjectId(application.job_id) }
+    const job = await jobsCollection.findOne(query1);
+    if (job) {
+      application.title = job.title;
+      application.company = job.company;
+      application.company_logo = job.company_logo;
+      application.description = job.description;
+    }
   }
- }
- //fokira way to aggergate data start>
+  //fokira way to aggergate data start>
 
   res.send(result);
 })
 //get some [0,1,many] data load use quary end
 
 //job applications api stap-1 start>
-app.post('/job-applications', async(req, res) =>{
+app.post('/job-applications', async (req, res) => {
   const application = req.body;
   const result = await jobApplicationCollection.insertOne(application);
   res.send(result);
