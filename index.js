@@ -129,6 +129,21 @@ app.post('/job-applications', async (req, res) => {
 
 //job applications api stap-1 end>
 
+//for job patch/update start>
+app.patch('/job-applications/:id',async(req,res) =>{
+  const id = req.params.id;
+  const data =req.body;
+  const filter = { _id: new ObjectId(id)};
+  const updateDoc ={
+    $set:{
+      status:data.status
+    }
+  }
+  const result = await jobApplicationCollection.updateOne(filter,updateDoc);
+  res.send(result);
+})
+//for job patch/update start>
+
 //jobs reletade apis end >
 app.listen(port, () => {
   console.log(`job id watinhg at: ${port}`);
