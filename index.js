@@ -54,12 +54,21 @@ const jobsCollection = client.db("JobHouse").collection("jobs");
 const jobApplicationCollection = client.db("JobHouse").collection("job-applications");
 //make jobapplication collection stap 2 end>
 
-//jotp job dorkar tar data nia nawa start>
+//joto job dorkar tar data nia nawa start>
+
 app.get('/jobs', async (req, res) => {
-  const cursor = jobsCollection.find();
+     //condition for specfic data by email st>
+  const email = req.query.email;
+  let query={};
+  if(email){
+    query = {hr_email:email}
+  }
+      //condition specfic data by email end>
+  const cursor = jobsCollection.find(query);
   const result = await cursor.toArray();
   res.send(result);
 })
+
 //jotp job dorkar tar data nia nawa end>
 
 //loade data specpice jobdetails start >
@@ -77,8 +86,16 @@ app.post('/jobs', async(req,res) =>{
   const result = await jobsCollection.insertOne(newJob);
   res.send(result);
 })
-//make post job for assignment start>
+//make post job for assignment end>
 
+//for a job how man application count start>
+app.get('/job-applications/jobs/:job_id', async (req, res) => {
+  const jobId = req.params.job_id;
+  const query = { jobId: new ObjectId(jobId) };
+  const result = await jobApplicationCollection.find(query).toArray();
+  res.send(result);
+});
+//for a job how man application count end>
 
 //get some [0,1,many] data load use quary start>
 app.get('/job-application', async (req, res) => {
